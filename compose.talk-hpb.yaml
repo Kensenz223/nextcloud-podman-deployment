@@ -1,0 +1,16 @@
+services:
+  nextcloud-talk-hpb:
+    image: ghcr.io/nextcloud-releases/aio-talk:latest
+    container_name: nextcloud-talk-hpb
+    restart: unless-stopped
+    environment:
+      NC_DOMAIN: ${NEXTCLOUD_TRUSTED_DOMAIN}
+      TALK_HOST: ${NEXTCLOUD_TRUSTED_DOMAIN}
+      TALK_PORT: ${TALK_HPB_TURN_PORT:-3478}
+      TURN_SECRET: ${TURN_SECRET}
+      SIGNALING_SECRET: ${SIGNALING_SECRET}
+      INTERNAL_SECRET: ${INTERNAL_SECRET}
+    ports:
+      - "${TALK_HPB_SIGNALING_PORT:-8082}:8081"
+      - "${TALK_HPB_TURN_PORT:-3478}:3478/tcp"
+      - "${TALK_HPB_TURN_PORT:-3478}:3478/udp"

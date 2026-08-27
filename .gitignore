@@ -1,0 +1,43 @@
+# Secrets and local environment files
+.env
+.env.*
+!.env.example
+*.secret
+*.secrets
+
+# Nextcloud runtime and user data
+config/
+data/
+custom_apps/
+themes/
+files/
+
+# Database, Redis, and backup artifacts
+*.sql
+*.sql.gz
+*.dump
+*.dump.gz
+*.tar
+*.tar.gz
+backup/
+backups/
+
+# Certificates and private keys
+*.key
+*.pem
+*.p12
+*.pfx
+
+# Local logs and temporary files
+*.log
+*.tmp
+*.swp
+.DS_Store
+Thumbs.db
+
+# Tool and editor files
+.vscode/
+.idea/
+
+# Podman-generated local state
+podman-machine-default.json

@@ -1,0 +1,48 @@
+services:
+  nextcloud-db:
+    image: docker.io/library/postgres:16-alpine
+    container_name: nextcloud-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - nextcloud_pgdata:/var/lib/postgresql/data
+
+  nextcloud-redis:
+    image: docker.io/library/redis:7-alpine
+    container_name: nextcloud-redis
+    restart: unless-stopped
+    command: redis-server --appendonly yes
+    volumes:
+      - nextcloud_redisdata:/data
+
+  nextcloud-app:
+    image: docker.io/library/nextcloud:apache
+    container_name: nextcloud-app
+    restart: unless-stopped
+    depends_on:
+      - nextcloud-db
+      - nextcloud-redis
+    ports:
+      - "${NEXTCLOUD_HTTP_PORT:-8081}:80"
+    environment:
+      POSTGRES_HOST: nextcloud-db
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      REDIS_HOST: nextcloud-redis
+      NEXTCLOUD_ADMIN_USER: ${NEXTCLOUD_ADMIN_USER}
+      NEXTCLOUD_ADMIN_PASSWORD: ${NEXTCLOUD_ADMIN_PASSWORD}
+      NEXTCLOUD_TRUSTED_DOMAINS: ${NEXTCLOUD_TRUSTED_DOMAIN}
+    volumes:
+      - nextcloud_html:/var/www/html
+
+volumes:
+  nextcloud_html:
+    name: nextcloud_html
+  nextcloud_pgdata:
+    name: nextcloud_pgdata
+  nextcloud_redisdata:
+    name: nextcloud_redisdata
